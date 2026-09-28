@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Cali.app — AI Fitness Assistant</title>
   <meta name="theme-color" content="#0e1116">
   <meta name="description" content="AI fitness assistant with real-time pose detection in the browser">
@@ -31,20 +31,20 @@
         </div>
       </div>
 
-      <div class="welcome-tabs" role="tablist">
-        <button type="button" class="welcome-tab active" data-panel="about" id="tabAbout" role="tab">О проекте</button>
-        <button type="button" class="welcome-tab" data-panel="mission" id="tabMission" role="tab">Миссия</button>
-        <button type="button" class="welcome-tab" data-panel="features" id="tabFeatures" role="tab">Возможности</button>
+      <div class="welcome-tabs" role="tablist" aria-label="Welcome sections">
+        <button type="button" class="welcome-tab active" data-panel="about" id="tabAbout" role="tab" aria-selected="true" aria-controls="panel-about" tabindex="0">О проекте</button>
+        <button type="button" class="welcome-tab" data-panel="mission" id="tabMission" role="tab" aria-selected="false" aria-controls="panel-mission" tabindex="-1">Миссия</button>
+        <button type="button" class="welcome-tab" data-panel="features" id="tabFeatures" role="tab" aria-selected="false" aria-controls="panel-features" tabindex="-1">Возможности</button>
       </div>
 
       <div class="welcome-panels">
-        <div id="panel-about" class="welcome-panel active" role="tabpanel">
+        <div id="panel-about" class="welcome-panel active" role="tabpanel" aria-labelledby="tabAbout" tabindex="0">
           <p id="welcomeAbout"></p>
         </div>
-        <div id="panel-mission" class="welcome-panel" role="tabpanel">
+        <div id="panel-mission" class="welcome-panel" role="tabpanel" aria-labelledby="tabMission" tabindex="0">
           <p id="welcomeMission"></p>
         </div>
-        <div id="panel-features" class="welcome-panel" role="tabpanel">
+        <div id="panel-features" class="welcome-panel" role="tabpanel" aria-labelledby="tabFeatures" tabindex="0">
           <ul id="welcomeFeatures" class="feature-list"></ul>
         </div>
       </div>
@@ -179,7 +179,7 @@
   </main>
 
   <!-- Result overlay -->
-  <div id="result" class="overlay" hidden>
+  <div id="result" class="overlay" hidden role="dialog" aria-modal="true" aria-labelledby="resultTitle">
     <div class="modal">
       <h2 id="resultTitle">Workout Complete</h2>
       <div id="resultBody"></div>

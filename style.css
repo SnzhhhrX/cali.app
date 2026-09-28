@@ -147,6 +147,13 @@ body {
   background: var(--card-hover);
 }
 
+.lang-btn:focus-visible,
+.welcome-tab:focus-visible,
+.link:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
 .welcome-tabs {
   display: flex;
   gap: 6px;
@@ -884,7 +891,8 @@ select:focus-visible {
 }
 
 @keyframes pop {
-  from { transform: scale(0.94); opacity: 0; }
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
