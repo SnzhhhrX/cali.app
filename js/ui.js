@@ -202,9 +202,12 @@ export function showResult(r) {
 
 export const hideResult = () => {
   if ($('result')) $('result').hidden = true;
-  if (lastFocused?.focus) {
-    try { lastFocused.focus({ preventScroll: true }); } catch { lastFocused.focus(); }
-    lastFocused = null;
+  const target = lastFocused;
+  lastFocused = null;
+  const next = canTakeFocus(target) ? target
+    : canTakeFocus(els.start) ? els.start : null;
+  if (next) {
+    try { next.focus({ preventScroll: true }); } catch { next.focus(); }
   }
 };
 export const showError = (msg) => setLoading(msg);
@@ -322,6 +325,11 @@ export function resetEditDefaults() {
 
 // ——— Accessibility helpers (presentation only, no training logic) ———
 let lastFocused = null;
+
+function canTakeFocus(el) {
+  return !!el && el.isConnected !== false && !el.disabled && !el.hidden
+    && !(el.closest && el.closest('[hidden]')) && el.offsetParent !== null && typeof el.focus === 'function';
+}
 
 function syncWelcomeTabs() {
   const tabs = Array.from(document.querySelectorAll('.welcome-tab'));

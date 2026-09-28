@@ -667,7 +667,7 @@ select:focus-visible {
 }
 
 .card.span-2,
-.card:first-child {
+.cards > .card:first-child {
   grid-column: span 2;
 }
 
