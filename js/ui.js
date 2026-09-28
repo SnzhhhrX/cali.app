@@ -73,7 +73,10 @@ export function applyLanguage() {
   $('flipLabel') && ($('flipLabel').textContent = t('flipCamera'));
   $('fsBtn') && ($('fsBtn').setAttribute('aria-label', t('fullscreen')));
   $('fsLabel') && ($('fsLabel').textContent = t('fullscreen'));
-  $('hudFinish') && ($('hudFinish').textContent = t('finishWorkout'));
+  $('hudFinish') && ($('hudFinish').setAttribute('aria-label', t('finishWorkout')));
+  const hudFinishLabel = $('hudFinishLabel');
+  if (hudFinishLabel) hudFinishLabel.textContent = t('finishWorkout');
+  else if ($('hudFinish')) $('hudFinish').textContent = t('finishWorkout');
 
   // Lang buttons
   document.querySelectorAll('.lang-btn').forEach((b) => {

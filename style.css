@@ -395,7 +395,7 @@ body {
   background: rgba(10, 12, 16, 0.85);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  border-left: 4px solid var(--line);
+  border: 1px solid var(--line);
   border-radius: 12px;
   padding: 12px 18px;
   font-size: clamp(1.05rem, 3.8vw, 1.4rem);
@@ -403,8 +403,6 @@ body {
   line-height: 1.35;
   margin-bottom: 68px;
   transition: border-color var(--ease-slow), color var(--ease-slow), background-color var(--ease-slow);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-left-width: 4px;
   overflow-wrap: anywhere;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -414,19 +412,27 @@ body {
 
 .hud-msg:empty { display: none; }
 
+.hud-msg[data-kind="idle"] {
+  color: var(--text);
+  border-color: var(--line);
+}
+
 .hud-msg[data-kind="good"] {
   color: var(--good);
-  border-left-color: var(--good);
+  border-color: rgba(61, 220, 132, 0.45);
+  background: linear-gradient(0deg, var(--good-tint), var(--good-tint)), rgba(10, 12, 16, 0.85);
 }
 
 .hud-msg[data-kind="bad"] {
   color: var(--bad);
-  border-left-color: var(--bad);
+  border-color: rgba(255, 93, 93, 0.45);
+  background: linear-gradient(0deg, var(--bad-tint), var(--bad-tint)), rgba(10, 12, 16, 0.85);
 }
 
 .hud-msg[data-kind="warn"] {
-  color: #f0c14a;
-  border-left-color: #f0c14a;
+  color: var(--warn);
+  border-color: rgba(240, 193, 74, 0.45);
+  background: linear-gradient(0deg, var(--warn-tint), var(--warn-tint)), rgba(10, 12, 16, 0.85);
 }
 
 /* Camera tools */
@@ -444,23 +450,24 @@ body {
 .icon-btn {
   display: inline-flex;
   align-items: center;
-  gap: 7px;
-  background: rgba(10, 12, 16, 0.78);
+  gap: 8px;
+  background: rgba(10, 12, 16, 0.82);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   color: var(--text);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 12px;
   padding: 10px 14px;
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
-  transition: background 0.15s, transform 0.1s;
+  transition: background var(--ease), transform 0.1s, border-color var(--ease);
   min-height: 44px;
 }
 
 .icon-btn:hover {
-  background: rgba(20, 24, 32, 0.9);
+  background: rgba(20, 24, 32, 0.92);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .icon-btn:active {
@@ -553,6 +560,12 @@ textarea {
   width: 100%;
 }
 
+select {
+  min-height: 48px;
+  cursor: pointer;
+  appearance: auto;
+}
+
 select:focus,
 textarea:focus {
   outline: 2px solid var(--accent);
@@ -609,18 +622,27 @@ select:focus-visible {
 .toggle {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   color: var(--muted);
   font-size: 0.9rem;
   flex: 1 1 100%;
   cursor: pointer;
   user-select: none;
+  min-height: 44px;
+  padding: 4px 0;
 }
 
 .toggle input {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   accent-color: var(--accent);
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.toggle input:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
 }
 
 .cards {
@@ -665,21 +687,35 @@ select:focus-visible {
 .feedback p {
   font-size: 1.2rem;
   font-weight: 600;
+  line-height: 1.4;
   min-height: 2.4em;
-  transition: color 0.2s;
+  overflow-wrap: anywhere;
+  transition: color var(--ease-slow);
 }
 
 .feedback {
-  border-left: 4px solid var(--line);
-  transition: border-color 0.2s;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+  transition: border-color var(--ease-slow), background-color var(--ease-slow);
 }
 
-.feedback[data-kind="good"] { border-left-color: var(--good); }
+.feedback[data-kind="idle"] { border-color: var(--line); }
+.feedback[data-kind="good"] {
+  border-color: rgba(61, 220, 132, 0.45);
+  background: linear-gradient(0deg, var(--good-tint), var(--good-tint)), var(--card);
+}
 .feedback[data-kind="good"] p { color: var(--good); }
-.feedback[data-kind="bad"] { border-left-color: var(--bad); }
+.feedback[data-kind="bad"] {
+  border-color: rgba(255, 93, 93, 0.45);
+  background: linear-gradient(0deg, var(--bad-tint), var(--bad-tint)), var(--card);
+}
 .feedback[data-kind="bad"] p { color: var(--bad); }
-.feedback[data-kind="warn"] { border-left-color: #f0c14a; }
-.feedback[data-kind="warn"] p { color: #f0c14a; }
+.feedback[data-kind="warn"] {
+  border-color: rgba(240, 193, 74, 0.45);
+  background: linear-gradient(0deg, var(--warn-tint), var(--warn-tint)), var(--card);
+}
+.feedback[data-kind="warn"] p { color: var(--warn); }
 
 .tips ul {
   padding-left: 18px;
