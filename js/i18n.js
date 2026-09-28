@@ -23,6 +23,12 @@ const STRINGS = {
 
     // Controls
     exercise: 'Упражнение',
+    setupTitle: 'Тренировка',
+    heroTitle: 'Тренируйся жёстко — камера держит технику',
+    heroSub: 'Приседания, отжимания и планка: счёт повторений и подсказки по технике — прямо в браузере, без регистрации.',
+    heroMeta: 'Без регистрации · Видео не покидает устройство',
+    heroChip: 'присед · отжимания · планка',
+    heroImgAlt: 'Спортсмен выполняет отжимания в тёмном зале',
     squat: 'Присед',
     pushup: 'Отжимания',
     plank: 'Планка',
@@ -143,6 +149,12 @@ const STRINGS = {
     defaultFeatures: '• Real-time pose recognition via webcam\n• 3 exercises: Squat, Push-up, Plank\n• Specific technique tips (Error Mode)\n• Fake-rep protection on low visibility\n• Workout history on device\n• Voice cues and sounds\n• Works as PWA on phone',
 
     exercise: 'Exercise',
+    setupTitle: 'Workout',
+    heroTitle: 'Train hard — the camera keeps your form',
+    heroSub: 'Squats, push-ups and planks with rep counting and technique cues — right in the browser, no sign-up.',
+    heroMeta: 'No sign-up · Video never leaves your device',
+    heroChip: 'squat · push-up · plank',
+    heroImgAlt: 'Athlete doing push-ups in a dark gym',
     squat: 'Squat',
     pushup: 'Push-up',
     plank: 'Plank',

@@ -26,7 +26,13 @@ export function applyLanguage() {
   if (wTitle) wTitle.textContent = t('welcomeTitle');
   const wSub = $('welcomeSubtitle');
   if (wSub) wSub.textContent = t('welcomeSubtitle');
-  $('btnStartApp') && ($('btnStartApp').textContent = t('startApp'));
+  $('btnStartApp') && setCtaLabels($('btnStartApp'), t('startApp'));
+  const heroTitle = $('heroTitle');
+  if (heroTitle) { heroTitle.textContent = t('heroTitle'); splitWords(heroTitle); }
+  $('heroSub') && ($('heroSub').textContent = t('heroSub'));
+  $('heroMeta') && ($('heroMeta').textContent = t('heroMeta'));
+  $('heroChip') && ($('heroChip').textContent = t('heroChip'));
+  $('heroImg') && ($('heroImg').alt = t('heroImgAlt'));
   $('btnEditContent') && ($('btnEditContent').textContent = t('editContent'));
   $('tabAbout') && ($('tabAbout').textContent = t('about'));
   $('tabMission') && ($('tabMission').textContent = t('mission'));
@@ -58,6 +64,7 @@ export function applyLanguage() {
   $('resultTitle') && ($('resultTitle').textContent = t('workoutComplete'));
 
   // Cards labels
+  setText('[data-i18n="setupTitle"]', t('setupTitle'));
   setText('[data-i18n="exerciseCard"]', t('exerciseCard'));
   setText('[data-i18n="technique"]', t('technique'));
   setText('[data-i18n="time"]', t('time'));
@@ -334,10 +341,45 @@ function canTakeFocus(el) {
 function syncWelcomeTabs() {
   const tabs = Array.from(document.querySelectorAll('.welcome-tab'));
   if (!tabs.length) return;
+  let activeTab = null;
   tabs.forEach((tab) => {
     const active = tab.classList.contains('active');
     tab.setAttribute('aria-selected', active ? 'true' : 'false');
     tab.tabIndex = active ? 0 : -1;
+    if (active) activeTab = tab;
+  });
+  // Sliding indicator (vanilla adaptation of BuildUI Animated Tabs "bubble"):
+  // position follows the active tab; CSS transition provides the motion.
+  const ink = document.querySelector('.welcome-tabs .tab-ink');
+  if (ink && activeTab) {
+    ink.style.transform = `translateX(${activeTab.offsetLeft}px)`;
+    ink.style.width = `${activeTab.offsetWidth}px`;
+  }
+}
+
+// Set both visible labels of the animated CTA (vanilla adaptation of
+// dillionverma Interactive Hover Button); falls back to plain text.
+function setCtaLabels(btn, text) {
+  const labels = btn.querySelectorAll('.btn-cta-label');
+  if (labels.length) labels.forEach((s) => { s.textContent = text; });
+  else btn.textContent = text;
+}
+
+// Split a headline into animated word spans (vanilla adaptation of MagicUI
+// Text Animate "by word" + "slideUp"): full text stays on aria-label so
+// screen readers hear it once; spans are decorative.
+function splitWords(el) {
+  const text = el.textContent || '';
+  el.setAttribute('aria-label', text);
+  el.textContent = '';
+  text.split(/\s+/).filter(Boolean).forEach((word, i) => {
+    if (i > 0) el.appendChild(document.createTextNode(' '));
+    const s = document.createElement('span');
+    s.className = 'w';
+    s.setAttribute('aria-hidden', 'true');
+    s.style.setProperty('--i', i);
+    s.textContent = word;
+    el.appendChild(s);
   });
 }
 
@@ -347,6 +389,8 @@ function initWelcomeTabsA11y() {
   syncWelcomeTabs();
   const obs = new MutationObserver(syncWelcomeTabs);
   tabs.forEach((tab) => obs.observe(tab, { attributes: true, attributeFilter: ['class'] }));
+  window.addEventListener('resize', syncWelcomeTabs, { passive: true });
+  if (document.fonts?.ready) document.fonts.ready.then(() => syncWelcomeTabs()).catch(() => {});
   document.querySelector('.welcome-tabs')?.addEventListener('keydown', (e) => {
     const current = document.activeElement;
     const i = tabs.indexOf(current);
