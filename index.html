@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Cali.app — AI Fitness Assistant</title>
+  <meta name="theme-color" content="#101311">
+  <meta name="description" content="AI fitness assistant with real-time pose detection in the browser">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+  <link rel="preload" as="image" href="https://images.pexels.com/photos/4162487/pexels-photo-4162487.jpeg?auto=compress&cs=tinysrgb&w=1600">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5.1675469404/pose.js" crossorigin="anonymous"></script>
+</head>
+<body class="on-welcome">
+
+  <!-- ===== WELCOME SCREEN ===== -->
+  <section id="welcome" class="welcome">
+    <div class="spotlight" aria-hidden="true">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 378 394" fill="none">
+        <g filter="url(#spotlight-filter)">
+          <ellipse cx="192" cy="175" rx="128" ry="107" fill="#c8f04b" fill-opacity="0.14"></ellipse>
+        </g>
+        <defs>
+          <filter id="spotlight-filter" x="-0.48" y="0.03" width="1.97" height="1.94" filterUnits="objectBoundingBox" color-interpolation-filters="sRGB">
+            <feFlood flood-opacity="0" result="BackgroundImageFix"></feFlood>
+            <feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"></feBlend>
+            <feGaussianBlur stdDeviation="45" result="effect1_foregroundBlur"></feGaussianBlur>
+          </filter>
+        </defs>
+      </svg>
+    </div>
+    <div class="welcome-inner">
+      <header class="welcome-top">
+        <div class="logo-row">
+          <div class="logo-mark">C</div>
+          <div>
+            <h1 id="welcomeTitle">Cali.app</h1>
+            <p id="welcomeSubtitle" class="welcome-sub">AI Fitness Assistant</p>
+          </div>
+        </div>
+        <div class="lang-switch" role="group" aria-label="Language">
+          <button type="button" class="lang-btn" data-lang="ru">RU</button>
+          <button type="button" class="lang-btn" data-lang="en">EN</button>
+          <button type="button" class="lang-btn" data-lang="kk">KZ</button>
+        </div>
+      </header>
+
+      <div class="welcome-grid">
+        <div class="welcome-copy">
+          <p class="hero-kicker"><span class="pulse-dot" aria-hidden="true"></span><span id="heroMeta">Без регистрации · Видео не покидает устройство</span></p>
+          <h2 class="hero-title" id="heroTitle">Тренируйся жёстко — камера держит технику</h2>
+          <p class="hero-sub" id="heroSub">Приседания, отжимания и планка: счёт повторений и подсказки по технике — прямо в браузере, без регистрации.</p>
+          <div class="welcome-actions">
+            <button type="button" class="btn-cta">
+              <span class="btn-cta-label">Начать тренировку</span>
+              <span class="btn-cta-hover" aria-hidden="true"><span class="btn-cta-label">Начать тренировку</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span>
+              <span class="btn-cta-dot" aria-hidden="true"></span>
+            </button>
+          </div>
+
+          <div class="welcome-tabs-block">
+            <div class="welcome-tabs" role="tablist" aria-label="Welcome sections">
+              <span class="tab-ink" aria-hidden="true"></span>
+              <button type="button" class="welcome-tab active" data-panel="about" id="tabAbout" role="tab" aria-selected="true" aria-controls="panel-about" tabindex="0">О проекте</button>
+              <button type="button" class="welcome-tab" data-panel="mission" id="tabMission" role="tab" aria-selected="false" aria-controls="panel-mission" tabindex="-1">Миссия</button>
+              <button type="button" class="welcome-tab" data-panel="features" id="tabFeatures" role="tab" aria-selected="false" aria-controls="panel-features" tabindex="-1">Возможности</button>
+            </div>
+
+            <div class="welcome-panels">
+              <div id="panel-about" class="welcome-panel active" role="tabpanel" aria-labelledby="tabAbout" tabindex="0">
+                <p id="welcomeAbout"></p>
+              </div>
+              <div id="panel-mission" class="welcome-panel" role="tabpanel" aria-labelledby="tabMission" tabindex="0">
+                <p id="welcomeMission"></p>
+              </div>
+              <div id="panel-features" class="welcome-panel" role="tabpanel" aria-labelledby="tabFeatures" tabindex="0">
+                <ul id="welcomeFeatures" class="feature-list"></ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <figure class="hero-media">
+          <img src="https://images.pexels.com/photos/4162487/pexels-photo-4162487.jpeg?auto=compress&cs=tinysrgb&w=1600" alt="Мужчина выполняет отжимания в зале" id="heroImg" width="1600" height="1067">
+          <figcaption class="hero-credit">Ivan S / Pexels</figcaption>
+          <div class="hero-chip" aria-hidden="true">
+            <div class="hero-chip-main"><span class="hero-chip-dot"></span><b>AI FORM</b></div>
+            <span id="heroChip">анализ техники в реальном времени</span>
+          </div>
+        </figure>
+      </div>
+
+      <div class="w-stats" id="wStats"></div>
+
+      <section class="w-sec">
+        <h3 class="w-h" data-t="secHow"></h3>
+        <ol class="w-steps" id="wSteps"></ol>
+      </section>
+
+      <section class="w-sec">
+        <h3 class="w-h" data-t="secEx"></h3>
+        <div class="w-ex" id="wEx"></div>
+      </section>
+
+      <section class="w-sec">
+        <h3 class="w-h" data-t="secFaq"></h3>
+        <div id="wFaq" class="faq card"></div>
+      </section>
+
+      <section class="w-cta">
+        <h3 class="w-h" data-t="ctaTitle"></h3>
+        <p data-t="ctaText"></p>
+        <button type="button" class="btn-cta">
+              <span class="btn-cta-label">Начать тренировку</span>
+              <span class="btn-cta-hover" aria-hidden="true"><span class="btn-cta-label">Начать тренировку</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg></span>
+              <span class="btn-cta-dot" aria-hidden="true"></span>
+            </button>
+      </section>
+
+      <footer class="w-foot" data-t="footer"></footer>
+    </div>
+  </section>
+
+  <!-- ===== MAIN APP ===== -->
+  <main id="mainApp" class="app" hidden>
+    <header class="app-header">
+      <a href="#" id="logoHome" class="logo-row compact" aria-label="Cali.app">
+        <div class="logo-mark sm">C</div>
+        <div>
+          <h1>Cali.app</h1>
+          <p data-i18n="tagline">AI Fitness Assistant</p>
+        </div>
+      </a>
+      <div class="header-actions">
+        <div class="lang-switch" role="group" aria-label="Language">
+          <button type="button" class="lang-btn" data-lang="ru">RU</button>
+          <button type="button" class="lang-btn" data-lang="en">EN</button>
+          <button type="button" class="lang-btn" data-lang="kk">KZ</button>
+        </div>
+      </div>
+    </header>
+
+    <section class="stage">
+      <!-- Camera block -->
+      <div id="camera" class="camera mirror">
+        <video id="video" playsinline muted></video>
+        <canvas id="canvas"></canvas>
+        <div id="placeholder" class="placeholder"></div>
+        <div id="frameGuide" class="frame-guide" hidden aria-live="polite"><span class="frame-dot"></span><span id="frameGuideText"></span></div>
+
+        <!-- HUD overlay -->
+        <div id="hud" class="hud" hidden>
+          <div class="hud-top">
+            <div class="hud-big">
+              <b id="hudCounter">0</b>
+              <span id="hudLabel">Reps</span>
+            </div>
+            <div class="hud-side">
+              <span id="hudTime">00:00</span>
+              <small id="hudConf">Видимость: —</small>
+            </div>
+          </div>
+          <div class="goal-bar" hidden><i class="goal-fill"></i></div>
+          <div id="hudMsg" class="hud-msg" data-kind="idle"></div>
+        </div>
+
+        <!-- Camera tools -->
+        <div class="cam-tools">
+          <button id="flipBtn" class="icon-btn" type="button" aria-label="Flip camera" title="Flip camera">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 19H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h5"/><path d="M13 5h7a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-5"/><circle cx="12" cy="12" r="3"/><path d="m18 22-3-3 3-3"/><path d="m6 2 3 3-3 3"/></svg>
+            <span id="flipLabel" class="icon-label">Сменить камеру</span>
+          </button>
+          <button id="fsBtn" class="icon-btn" type="button" aria-label="Fullscreen" title="Fullscreen">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M21 8V5a2 2 0 0 0-2-2h-3"/><path d="M3 16v3a2 2 0 0 0 2 2h3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>
+            <span id="fsLabel" class="icon-label">На весь экран</span>
+          </button>
+          <button id="hudPause" class="icon-btn" type="button" hidden>
+            <svg class="ic-pause" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+            <svg class="ic-play" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+            <span id="hudPauseLabel"></span>
+          </button>
+          <button id="hudFinish" class="icon-btn stop" type="button" hidden>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+            <span id="hudFinishLabel">Завершить</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Side panel -->
+      <div class="panel">
+        <div class="setup">
+          <div class="setup-head">
+            <span class="setup-title" data-i18n="setupTitle">Тренировка</span>
+            <div class="toggles">
+              <label class="toggle" data-i18n="voiceSound">
+                <input type="checkbox" id="voiceToggle" checked>
+                <span>Голос и звук</span>
+              </label>
+              <label class="toggle">
+                <input type="checkbox" id="anglesToggle" checked>
+                <span data-t="showAngles">Углы на скелете</span>
+              </label>
+            </div>
+          </div>
+          <label class="field">
+            <span data-i18n="exercise">Exercise</span>
+            <select id="exercise">
+              <option value="squat">Squat</option>
+              <option value="pushup">Push-up</option>
+              <option value="plank">Plank</option>
+            </select>
+          </label>
+          <label class="field">
+            <span data-i18n="goal">Цель</span>
+            <select id="goal"></select>
+          </label>
+          <div class="demo-row">
+            <button type="button" id="demoBtn" class="link"></button>
+            <input type="file" id="demoFile" accept="video/*" hidden>
+          </div>
+          <div class="setup-actions">
+            <button id="startBtn" class="btn primary" type="button">Start Workout</button>
+            <button id="pauseBtn" class="btn ghost" type="button" hidden></button>
+            <button id="finishBtn" class="btn danger" type="button" hidden>Finish Workout</button>
+          </div>
+        </div>
+
+        <div class="scoreboard">
+          <div class="score-main">
+            <div class="score-count">
+              <span id="counterLabel">Reps</span>
+              <b id="counter">0</b>
+            </div>
+            <div class="score-ex">
+              <span data-i18n="exerciseCard">Exercise</span>
+              <b id="exName">Squat</b>
+              <small id="state">—</small>
+            </div>
+          </div>
+          <div class="score-row">
+            <div class="score-cell">
+              <span data-i18n="technique">Technique</span>
+              <b id="technique" data-kind="idle">—</b>
+            </div>
+            <div class="score-cell">
+              <span data-i18n="time">Time</span>
+              <b id="timer">00:00</b>
+            </div>
+          </div>
+          <div class="tech-meter" aria-hidden="true">
+            <i class="tech-fill" id="techFill"></i>
+          </div>
+        </div>
+
+        <div class="goal-bar panel-goal" hidden><i class="goal-fill"></i></div>
+
+        <div id="feedbackCard" class="feedback" data-kind="idle">
+          <span data-i18n="feedback">Feedback</span>
+          <p id="feedback" aria-live="polite">Нажми Start Workout</p>
+        </div>
+        <div class="card tips" id="tips"></div>
+      </div>
+    </section>
+
+    <section class="info">
+      <div class="card">
+        <span data-i18n="howItWorks">Как это работает</span>
+        <p data-i18n="howItWorksText">Камера видит тело, ИИ находит суставы, а Cali.app считает углы, повторения и находит ошибки техники. Видео не покидает устройство: всё работает в браузере.</p>
+      </div>
+      <div class="card">
+        <div class="row">
+          <span data-i18n="history">История тренировок</span>
+          <button id="clearBtn" class="link" type="button">Очистить</button>
+        </div>
+        <p id="stats" class="stats"></p>
+        <ul id="history" class="history"></ul>
+      </div>
+    </section>
+    <section class="dash" id="dash">
+      <div class="card">
+        <div class="row">
+          <span data-t="dashTitle">Статистика</span>
+          <button id="exportBtn" class="link" type="button" data-t="exportCsv">Экспорт CSV</button>
+        </div>
+        <div id="dashBody"></div>
+      </div>
+    </section>
+
+    <section class="info">
+      <div class="card">
+        <span data-i18n="tipOfDay">Совет дня</span>
+        <p id="dailyTip"></p>
+      </div>
+      <div class="card">
+        <span data-i18n="faq">Частые вопросы</span>
+        <div id="faq" class="faq"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Result overlay -->
+  <div id="result" class="overlay" hidden role="dialog" aria-modal="true" aria-labelledby="resultTitle">
+    <div class="modal">
+      <div class="modal-top">
+        <h2 id="resultTitle">Workout Complete</h2>
+        <div class="tech-ring" id="techRing" hidden>
+          <svg viewBox="0 0 80 80" aria-hidden="true">
+            <circle class="ring-bg" cx="40" cy="40" r="34"/>
+            <circle class="ring-fg" id="ringFg" cx="40" cy="40" r="34"/>
+          </svg>
+          <b id="ringVal">—</b>
+        </div>
+      </div>
+      <div id="resultBody"></div>
+      <button id="againBtn" class="btn primary" type="button">New Workout</button>
+    </div>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

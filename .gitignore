@@ -1,0 +1,13 @@
+# Local env / secrets
+.env
+.env.local
+.env.*.local
+
+# AI-agent tooling (local only, not part of runtime)
+.agents/
+.claude/
+.claude-flow/
+.swarm/
+.playwright-mcp/
+.mcp.json
+CLAUDE.md
